@@ -7,6 +7,7 @@ import { styled } from 'storybook/theming';
 import { GLOBAL_KEY, PARAM_KEY } from '../constants';
 import type { CssVarsOverrides, CssVarsParameter } from '../types';
 import { decodeOverrides, encodeOverrides } from '../utils/overrides';
+import { groupVars } from '../utils/groupVars';
 import { getChangedVars, getRawValue } from '../utils/resolveCssVars';
 import { ExportModal } from './ExportModal';
 import { VarControl } from './VarControl';
@@ -36,6 +37,28 @@ const HeadCell = styled(Cell)(({ theme }) => ({
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'space-between',
+}));
+
+const GroupHeader = styled.div<{ first: boolean }>(({ theme, first }) => ({
+  gridColumn: '1 / -1',
+  display: 'flex',
+  alignItems: 'center',
+  gap: 8,
+  marginTop: first ? 0 : 20,
+  padding: '8px 15px 8px 12px',
+  background: theme.background.hoverable,
+  borderLeft: `3px solid ${theme.color.secondary}`,
+  borderTop: `1px solid ${theme.appBorderColor}`,
+  borderBottom: `1px solid ${theme.appBorderColor}`,
+  fontWeight: theme.typography.weight.bold,
+  fontSize: theme.typography.size.s2 - 1,
+  color: theme.color.defaultText,
+}));
+
+const GroupCount = styled.span(({ theme }) => ({
+  fontWeight: theme.typography.weight.regular,
+  color: theme.textMutedColor,
+  fontSize: theme.typography.size.s1,
 }));
 
 const Name = styled.label<{ changed: boolean }>(({ theme, changed }) => ({
@@ -83,6 +106,7 @@ export const Panel = memo(function CssVarsPanel({ active }: { active?: boolean }
   }, [overrides, params, updateGlobals]);
 
   const entries = Object.entries(params).filter(([, config]) => !!config);
+  const groups = groupVars(params);
   const changed = new Set(getChangedVars(params, overrides));
   const [exportOpen, setExportOpen] = useState(false);
 
@@ -122,40 +146,54 @@ export const Panel = memo(function CssVarsPanel({ active }: { active?: boolean }
                 <UndoIcon />
               </Button>
             </HeadCell>
-            {entries.map(([name, config]) => {
-              const isChanged = changed.has(name);
-              return (
-                <React.Fragment key={name}>
-                  <Cell>
-                    <Name htmlFor={`css-var-${name}`} changed={isChanged}>
-                      {config!.label ?? name}
-                    </Name>
-                    {config!.label && <VarName>{name}</VarName>}
-                    {config!.description && <Description>{config!.description}</Description>}
-                  </Cell>
-                  <Cell>
-                    <VarControl
-                      name={name}
-                      config={config!}
-                      value={getRawValue(name, config!, overrides)}
-                      onChange={(v) =>
-                        setValue(
-                          name,
-                          v === '' && (config!.type === 'number' || config!.type === 'size') ? undefined : v,
-                        )
-                      }
-                    />
-                  </Cell>
-                  <Cell style={{ padding: 4, alignItems: 'center' }}>
-                    {isChanged && (
-                      <IconButton ariaLabel={`Reset ${name}`} onClick={() => setValue(name, undefined)}>
-                        <UndoIcon />
-                      </IconButton>
-                    )}
-                  </Cell>
-                </React.Fragment>
-              );
-            })}
+            {groups.map((group, index) => (
+              <React.Fragment key={group.label ?? '__ungrouped'}>
+                {group.label && (
+                  <GroupHeader first={index === 0} role="heading" aria-level={3}>
+                    {group.label}
+                    <GroupCount>
+                      {group.vars.length} {group.vars.length === 1 ? 'variable' : 'variables'}
+                      {group.vars.some(([n]) => changed.has(n)) &&
+                        `, ${group.vars.filter(([n]) => changed.has(n)).length} changed`}
+                    </GroupCount>
+                  </GroupHeader>
+                )}
+                {group.vars.map(([name, config]) => {
+                  const isChanged = changed.has(name);
+                  return (
+                    <React.Fragment key={name}>
+                      <Cell>
+                        <Name htmlFor={`css-var-${name}`} changed={isChanged}>
+                          {config.label ?? name}
+                        </Name>
+                        {config.label && <VarName>{name}</VarName>}
+                        {config.description && <Description>{config.description}</Description>}
+                      </Cell>
+                      <Cell>
+                        <VarControl
+                          name={name}
+                          config={config!}
+                          value={getRawValue(name, config!, overrides)}
+                          onChange={(v) =>
+                            setValue(
+                              name,
+                              v === '' && (config.type === 'number' || config.type === 'size') ? undefined : v,
+                            )
+                          }
+                        />
+                      </Cell>
+                      <Cell style={{ padding: 4, alignItems: 'center' }}>
+                        {isChanged && (
+                          <IconButton ariaLabel={`Reset ${name}`} onClick={() => setValue(name, undefined)}>
+                            <UndoIcon />
+                          </IconButton>
+                        )}
+                      </Cell>
+                    </React.Fragment>
+                  );
+                })}
+              </React.Fragment>
+            ))}
           </Table>
         )}
         <ExportModal open={exportOpen} onOpenChange={setExportOpen} params={params} overrides={overrides} />

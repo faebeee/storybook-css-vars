@@ -5,11 +5,14 @@
   border-radius: var(--btn-radius, 3em);
   box-shadow: var(--btn-shadow, none);
   cursor: pointer;
-  display: inline-block;
+  display: var(--btn-display, inline-block);
   line-height: 1;
   font-size: 14px;
   padding: var(--btn-padding-y, 11px) var(--btn-padding-x, 20px);
   min-width: var(--btn-min-width, 0);
+  position: var(--btn-position, static);
+  top: var(--btn-offset, 0);
+  left: var(--btn-offset, 0);
 }
 .storybook-button--primary {
   color: var(--btn-fg, white);

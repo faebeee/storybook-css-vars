@@ -73,6 +73,44 @@ describe('size type', () => {
   });
 });
 
+describe('position type', () => {
+  const posParams: CssVarsParameter = {
+    '--pos': { type: 'position', default: 'static' },
+    '--sticky': { type: 'position', options: ['relative', 'sticky'] },
+  };
+
+  it('uses the default and applies overrides as-is', () => {
+    expect(resolveCssVars(posParams, {})).toEqual({ '--pos': 'static' });
+    expect(resolveCssVars(posParams, { '--pos': 'absolute', '--sticky': 'sticky' })).toEqual({
+      '--pos': 'absolute',
+      '--sticky': 'sticky',
+    });
+  });
+
+  it('marks only values that differ from the default as changed', () => {
+    expect(getChangedVars(posParams, { '--pos': 'static', '--sticky': 'relative' })).toEqual(['--sticky']);
+  });
+});
+
+describe('display type', () => {
+  const displayParams: CssVarsParameter = {
+    '--display': { type: 'display', default: 'flex' },
+    '--layout': { type: 'display', options: ['grid', 'none'] },
+  };
+
+  it('uses the default and applies overrides as-is', () => {
+    expect(resolveCssVars(displayParams, {})).toEqual({ '--display': 'flex' });
+    expect(resolveCssVars(displayParams, { '--display': 'none', '--layout': 'grid' })).toEqual({
+      '--display': 'none',
+      '--layout': 'grid',
+    });
+  });
+
+  it('marks only values that differ from the default as changed', () => {
+    expect(getChangedVars(displayParams, { '--display': 'flex', '--layout': 'none' })).toEqual(['--layout']);
+  });
+});
+
 describe('getChangedVars', () => {
   it('lists only declared vars that differ from their default', () => {
     expect(getChangedVars(params, { '--bg': '#fff', '--radius': 8, '--other': 'x', '--fg': 'blue' }).sort()).toEqual([

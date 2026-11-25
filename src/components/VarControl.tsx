@@ -2,7 +2,7 @@ import React from 'react';
 import { Form } from 'storybook/internal/components';
 import { styled } from 'storybook/theming';
 
-import { DEFAULT_SIZE_UNITS } from '../constants';
+import { DEFAULT_SIZE_UNITS, DISPLAY_VALUES, POSITION_VALUES } from '../constants';
 import type { CssVarConfig } from '../types';
 import { parseSize } from '../utils/resolveCssVars';
 
@@ -182,10 +182,16 @@ export const VarControl = ({ name, config, value, onChange }: VarControlProps) =
       );
     }
 
+    case 'position':
+    case 'display':
     case 'select': {
-      const options = Array.isArray(config.options)
-        ? config.options.map((v) => [v, v] as const)
-        : Object.entries(config.options);
+      const source =
+        config.type === 'position'
+          ? (config.options ?? POSITION_VALUES)
+          : config.type === 'display'
+            ? (config.options ?? DISPLAY_VALUES)
+            : config.options;
+      const options = Array.isArray(source) ? source.map((v) => [v, v] as const) : Object.entries(source);
       return (
         <NativeSelect id={id} value={str} onChange={(e) => onChange(e.target.value)}>
           {!options.some(([, v]) => v === str) && <option value={str}>{str === '' ? 'Choose…' : str}</option>}

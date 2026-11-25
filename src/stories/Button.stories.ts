@@ -5,21 +5,53 @@ import type { CssVarsParameter } from '../types';
 import { Button } from './Button';
 
 const cssVars: CssVarsParameter = {
-  '--btn-bg': { type: 'color', default: '#1ea7fd', label: 'Background' },
-  '--btn-fg': { type: 'color', label: 'Text color', description: 'Leave empty to use the CSS fallback' },
   '--btn-radius': { type: 'number', default: 24, unit: 'px', min: 0, max: 48, step: 1, label: 'Radius' },
-  '--btn-padding-x': { type: 'size', default: '1.25rem', units: ['px', 'rem', 'em'], label: 'Padding X' },
+
+  '--btn-bg': { type: 'color', default: '#1ea7fd', label: 'Background', group: 'Colors' },
+  '--btn-fg': {
+    type: 'color',
+    label: 'Text color',
+    description: 'Leave empty to use the CSS fallback',
+    group: 'Colors',
+  },
+
+  '--btn-padding-x': {
+    type: 'size',
+    default: '1.25rem',
+    units: ['px', 'rem', 'em'],
+    label: 'Padding X',
+    group: 'Spacing',
+  },
   '--btn-min-width': {
     type: 'size',
     label: 'Min width',
     description: 'Size with the full unit list. Empty means no min width.',
+    group: 'Spacing',
   },
-  '--btn-weight': { type: 'select', default: '700', options: ['400', '500', '700', '900'], label: 'Font weight' },
+
+  '--btn-display': { type: 'display', default: 'inline-block', label: 'Display', group: 'Layout' },
+  '--btn-position': { type: 'position', default: 'static', label: 'Position', group: 'Layout' },
+  '--btn-offset': {
+    type: 'size',
+    default: '0px',
+    label: 'Offset',
+    description: 'top/left, takes effect with relative, absolute, fixed or sticky',
+    group: 'Layout',
+  },
+
+  '--btn-weight': {
+    type: 'select',
+    default: '700',
+    options: ['400', '500', '700', '900'],
+    label: 'Font weight',
+    group: 'Typography & effects',
+  },
   '--btn-shadow': {
     type: 'text',
     default: 'none',
     label: 'Shadow',
     description: 'Any box-shadow value',
+    group: 'Typography & effects',
   },
 };
 
@@ -48,6 +80,7 @@ export const Danger: Story = {
       '--btn-bg': {
         type: 'select',
         label: 'Background',
+        group: 'Colors',
         default: '#e5484d',
         options: { Red: '#e5484d', Orange: '#f76b15', Dark: '#1c2024' },
       },

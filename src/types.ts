@@ -5,6 +5,8 @@ interface CssVarBase {
   label?: string;
   /** Help text shown below the label. */
   description?: string;
+  /** Group label. Variables with the same group are shown together under that label. */
+  group?: string;
 }
 
 export interface CssVarColor extends CssVarBase {
@@ -39,6 +41,36 @@ export interface CssVarSize extends CssVarBase {
   step?: number;
 }
 
+export type CssPosition = 'static' | 'relative' | 'absolute' | 'fixed' | 'sticky';
+
+export interface CssVarPosition extends CssVarBase {
+  type: 'position';
+  default?: CssPosition;
+  /** Limits the dropdown to these values. Defaults to all `position` keywords. */
+  options?: CssPosition[];
+}
+
+export type CssDisplay =
+  | 'block'
+  | 'inline'
+  | 'inline-block'
+  | 'flex'
+  | 'inline-flex'
+  | 'grid'
+  | 'inline-grid'
+  | 'flow-root'
+  | 'contents'
+  | 'list-item'
+  | 'table'
+  | 'none';
+
+export interface CssVarDisplay extends CssVarBase {
+  type: 'display';
+  default?: CssDisplay;
+  /** Limits the dropdown to these values. Defaults to all values in `DISPLAY_VALUES`. */
+  options?: CssDisplay[];
+}
+
 export interface CssVarSelect extends CssVarBase {
   type: 'select';
   /**
@@ -55,7 +87,8 @@ export interface CssVarText extends CssVarBase {
   default?: string;
 }
 
-export type CssVarConfig = CssVarColor | CssVarNumber | CssVarSize | CssVarSelect | CssVarText;
+export type CssVarConfig =
+  CssVarColor | CssVarNumber | CssVarSize | CssVarPosition | CssVarDisplay | CssVarSelect | CssVarText;
 
 /** Value of `parameters.cssVars`. */
 export type CssVarsParameter = Partial<Record<CssVarName, CssVarConfig>>;
