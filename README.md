@@ -1,4 +1,4 @@
-# storybook-addon-css-vars
+# @faebeee/storybook-addon-css-vars
 
 Edit CSS custom properties per story from a **CSS Variables** panel and see the story update instantly, similar to args and the Controls panel.
 
@@ -15,20 +15,20 @@ Edit CSS custom properties per story from a **CSS Variables** panel and see the 
 ## Install
 
 ```sh
-npm i -D storybook-addon-css-vars
+npm i -D @faebeee/storybook-addon-css-vars
 ```
 
 ```ts
 // .storybook/main.ts
 export default {
-  addons: ['storybook-addon-css-vars'],
+  addons: ['@faebeee/storybook-addon-css-vars'],
 };
 ```
 
 ## Usage
 
 ```ts
-import type { CssVarsParameter } from 'storybook-addon-css-vars';
+import type { CssVarsParameter } from '@faebeee/storybook-addon-css-vars';
 
 const cssVars: CssVarsParameter = {
   '--btn-bg': { type: 'color', default: '#1ea7fd', label: 'Background' },
