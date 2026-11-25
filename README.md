@@ -10,6 +10,8 @@ Edit CSS custom properties per story from a **CSS Variables** panel and see the 
 - Renderer-agnostic (React, Vue, Angular, Web Components, Svelte, ...)
 - Requires Storybook 10
 
+![CSS Variables panel in Storybook](docs/Screenshot.png)
+
 ## Install
 
 ```sh
@@ -79,6 +81,8 @@ Your CSS reads the variables as usual, ideally with a fallback:
 ## Export changed variables
 
 **Export CSS** in the panel header opens a dialog with a CSS rule that contains only the variables you changed in the current story, with their final values (units included). You can set the selector (default `:root`) and copy the CSS to the clipboard.
+
+![Export CSS dialog](docs/export-dialog.png)
 
 ```css
 :root {
