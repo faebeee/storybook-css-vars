@@ -1,6 +1,6 @@
 {
   "name": "@faebeee/storybook-addon-css-vars",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Edit CSS custom properties per story from a Storybook panel, with live updates",
   "keywords": [
     "storybook-addon",
