@@ -1,10 +1,10 @@
 import React from 'react';
-import { Form } from 'storybook/internal/components';
 import { styled } from 'storybook/theming';
 
 import { DEFAULT_SIZE_UNITS, DISPLAY_VALUES, POSITION_VALUES } from '../constants';
 import type { CssVarConfig } from '../types';
 import { parseSize } from '../utils/resolveCssVars';
+import { DraftInput } from './DraftInput';
 
 interface VarControlProps {
   name: string;
@@ -89,12 +89,7 @@ export const VarControl = ({ name, config, value, onChange }: VarControlProps) =
             value={toPickerHex(str)}
             onChange={(e) => onChange(e.target.value)}
           />
-          <Form.Input
-            id={id}
-            value={str}
-            placeholder="e.g. #0057ff"
-            onChange={(e) => onChange(e.currentTarget.value)}
-          />
+          <DraftInput id={id} value={str} placeholder="e.g. #0057ff" onValueChange={onChange} />
         </Row>
       );
 
@@ -115,17 +110,14 @@ export const VarControl = ({ name, config, value, onChange }: VarControlProps) =
             />
           )}
           <NumberBox grow={!hasRange}>
-            <Form.Input
+            <DraftInput
               id={id}
               type="number"
               min={config.min}
               max={config.max}
               step={config.step ?? 1}
-              value={num}
-              onChange={(e) => {
-                const v = e.currentTarget.value;
-                onChange(v === '' ? '' : Number(v));
-              }}
+              value={String(num)}
+              onValueChange={(v) => onChange(v === '' ? '' : Number(v))}
             />
           </NumberBox>
           {config.unit && <Unit>{config.unit}</Unit>}
@@ -153,17 +145,14 @@ export const VarControl = ({ name, config, value, onChange }: VarControlProps) =
             />
           )}
           <NumberBox grow={!hasRange}>
-            <Form.Input
+            <DraftInput
               id={id}
               type="number"
               min={config.min}
               max={config.max}
               step={config.step ?? 'any'}
-              value={size?.value ?? ''}
-              onChange={(e) => {
-                const v = e.currentTarget.value;
-                emit(v === '' ? '' : Number(v), unit);
-              }}
+              value={size ? String(size.value) : ''}
+              onValueChange={(v) => emit(v === '' ? '' : Number(v), unit)}
             />
           </NumberBox>
           <UnitSelect
@@ -206,6 +195,6 @@ export const VarControl = ({ name, config, value, onChange }: VarControlProps) =
 
     case 'text':
     default:
-      return <Form.Input id={id} value={str} onChange={(e) => onChange(e.currentTarget.value)} />;
+      return <DraftInput id={id} value={str} onValueChange={onChange} />;
   }
 };
